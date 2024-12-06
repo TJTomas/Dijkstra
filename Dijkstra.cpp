@@ -29,6 +29,17 @@ void Dijkstra::runDijkstra(){
 //
 //Note that I also called printInfoSoFar in the loop so I could 
 //see all the updates as we went along.
+	string array[numOfCities];
+	for (int i = numOfCities-1; i >= 0; i--) {
+		if (Cities[start] == Cities[prev[i]]) {
+			break;
+		}
+		array[i] = Cities[prev[i]];
+	}
+
+	for (int i = 0; i < numOfCities; i++) {
+	cout << array[i] << " ";
+	}
 }
 
 //WRITE THIS (12 pts)
