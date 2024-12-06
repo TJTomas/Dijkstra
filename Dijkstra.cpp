@@ -40,6 +40,15 @@ void Dijkstra::setDistances(int latestVert) {
 //minimum). If the minimum is through the recently visited 
 //vertex, then update the previous array so that it holds the 
 //latest visited vertex's index number
+	for (int i = 0; i < numOfCities; i++) {
+		if (visited[i]) {
+			if (distances[i] < latestVert) {
+				distances[i] += latestVert;
+			}
+		}
+	}
+}
+	
 }
 
 //WRITE THIS (8pts)
