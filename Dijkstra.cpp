@@ -29,19 +29,12 @@ void Dijkstra::runDijkstra(){
 //
 //Note that I also called printInfoSoFar in the loop so I could 
 //see all the updates as we went along.
-	string array[numOfCities];
-	for (int i = numOfCities-1; i >= 0; i--) {
-		if (Cities[start] == Cities[prev[i]]) {
-			break;
-		}
-		array[i] = Cities[prev[i]];
-	}
-
+	distances[start] = 0;
+	visited[start] = true;
 	for (int i = 0; i < numOfCities; i++) {
-	cout << array[i] << " ";
+		distances[i] = matrixGraph[distances[start]][i];
 	}
-}
-
+	
 //WRITE THIS (12 pts)
 void Dijkstra::setDistances(int latestVert) {
 // This method updates the distances array with the costs being
@@ -102,6 +95,20 @@ void Dijkstra::printPath() {
 //THEN print out the path in reverse order!  (To do this, I stuck
 //each city in an array as I worked my way from end to start, and 
 //then printed out the cities in reverse order.
+
+		string array[numOfCities];
+	for (int i = numOfCities-1; i >= 0; i--) {
+		if (Cities[start] == Cities[prev[i]]) {
+			break;
+		}
+		array[i] = Cities[prev[i]];
+	}
+
+	for (int i = 0; i < numOfCities; i++) {
+	cout << array[i] << " ";
+	}
+}
+
 }
 /************************************************************/
 /* That's the end of what you have to write                 */
