@@ -58,6 +58,16 @@ int Dijkstra::minDistance(){
 //Once the minimum is found (along with its index in the distance
 //array), the visited array at that index is set to True and that 
 //index is returned from this method.
+	int min = INT_MAX;
+	int minIndex = 0;
+	for (int i = 0; i < numOfCities; i++) {
+		if (visited[i] == false && distances[i] <= min) {
+			min = distances[i];
+			visited[i] = true;
+			minIndex = i;
+		}
+	}
+	return minIndex;
 }
 
 
