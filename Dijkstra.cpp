@@ -40,15 +40,19 @@ void Dijkstra::setDistances(int latestVert) {
 //minimum). If the minimum is through the recently visited 
 //vertex, then update the previous array so that it holds the 
 //latest visited vertex's index number
-	for (int i = 0; i < numOfCities; i++) {
+	int num_visited = -1;
+	for (int i = 0;i<numOfCities;i++) {
 		if (visited[i]) {
-			if (distances[i] < latestVert) {
-				distances[i] += latestVert;
-			}
+			num_visited++;
 		}
 	}
-}
-	
+	if (distances[latestVert] == -1) {
+		distances[latestVert] = distances[prev[num_visited]]+matrixGraph[prev[num_visited]][latestVert];
+	} else if (num_visited >= 0 && matrixGraph[prev[num_visited]][latestVert]!=-1) {
+		if (distances[latestVert] > distances[prev[num_visited]]+matrixGraph[prev[num_visited]][latestVert]) {
+			distances[latestVert] = distances[prev[num_visited]]+matrixGraph[prev[num_visited]][latestVert];
+		}
+	}
 }
 
 //WRITE THIS (8pts)
