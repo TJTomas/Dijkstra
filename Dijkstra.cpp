@@ -15,56 +15,62 @@ Dijkstra::Dijkstra(string fname) {
 
 // WRITE THIS (10 pts)
 void Dijkstra::runDijkstra(){
-//For this method, you should set the distance to the starting 
-//vertex to 0 (the starting vertex is the index in the start 
+	//Initialize distances
+	for (int i=0;i<numOfCities;i++) {
+		distances[i] = matrixGraph[start][i];
+		if (matrixGraph[start][i] > 0) {
+			prev[i] = start;
+		}
+	}
+	int nextindex = start;
+	for (int i = 0;i<numOfCities;i++) {
+		setDistances(nextindex);
+		nextindex = minDistance();
+	}
+
+//For this method, you should set the distance to the starting
+//vertex to 0 (the starting vertex is the index in the start
 //field)and set the visited array to true for the start index.
-//Then initialize the distances of the cost of going to each node 
-//from the start index (this is done using the adjacency  matrix 
-// - matrixGraph.  
+//Then initialize the distances of the cost of going to each node
+//from the start index (this is done using the adjacency  matrix
+// - matrixGraph.
 //Once you've initialized the starting values based on the start
-//index, loop until every vertex has been visited, calling the 
-//methods minDistance to find the next unvisited vertex with the 
-//minimum distance, and then calling setDistances method for 
+//index, loop until every vertex has been visited, calling the
+//methods minDistance to find the next unvisited vertex with the
+//minimum distance, and then calling setDistances method for
 //every vertex to update distances for the unvisited vertices.
 //
-//Note that I also called printInfoSoFar in the loop so I could 
+//Note that I also called printInfoSoFar in the loop so I could
 //see all the updates as we went along.
-	distances[start] = 0;
-	visited[start] = true;
-	for (int i = 0; i < numOfCities; i++) {
-		distances[i] = matrixGraph[distances[start]][i];
-	}
-	
+}
+
 //WRITE THIS (12 pts)
 void Dijkstra::setDistances(int latestVert) {
+	for (int i = 0;i<numOfCities;i++) {
+		if (distances[i] == -1 && distances[latestVert]+matrixGraph[latestVert][i]>0) {
+			distances[i] = distances[latestVert]+matrixGraph[latestVert][i];
+			prev[i] = latestVert;
+		} else if (matrixGraph[latestVert][i] > 0 && distances[latestVert]+matrixGraph[latestVert][i] < distances[i]) {
+			distances[i] = distances[latestVert]+matrixGraph[latestVert][i];
+			prev[i] = latestVert;
+		}
+	}
+}
+
 // This method updates the distances array with the costs being
 //updated to either their cost so far, or the cost of
 //traveling through the recently visited vertex + the cost of
 //traveling from that vertex to the new vertex (whichever is the
-//minimum). If the minimum is through the recently visited 
-//vertex, then update the previous array so that it holds the 
+//minimum). If the minimum is through the recently visited
+//vertex, then update the previous array so that it holds the
 //latest visited vertex's index number
-	int num_visited = -1;
-	for (int i = 0;i<numOfCities;i++) {
-		if (visited[i]) {
-			num_visited++;
-		}
-	}
-	if (distances[latestVert] == -1) {
-		distances[latestVert] = distances[prev[num_visited]]+matrixGraph[prev[num_visited]][latestVert];
-	} else if (num_visited >= 0 && matrixGraph[prev[num_visited]][latestVert]!=-1) {
-		if (distances[latestVert] > distances[prev[num_visited]]+matrixGraph[prev[num_visited]][latestVert]) {
-			distances[latestVert] = distances[prev[num_visited]]+matrixGraph[prev[num_visited]][latestVert];
-		}
-	}
-}
 
 //WRITE THIS (8pts)
 int Dijkstra::minDistance(){
 //This method finds the next unvisited vertex with the minimum
 //distance.
 //Once the minimum is found (along with its index in the distance
-//array), the visited array at that index is set to True and that 
+//array), the visited array at that index is set to True and that
 //index is returned from this method.
 	int min = INT_MAX;
 	int minIndex = 0;
@@ -82,33 +88,37 @@ int Dijkstra::minDistance(){
 
 //WRITE THIS (12 pts)
 void Dijkstra::printPath() {
-//This function gives you the final shortest path from the start 
-//index (aka city) to the end index (aka city).  It is very 
-//simple code!!  You must understand how it works, though, in 
-//order to be able to write it.
-//
-//To write this, you'll use the prev array.  Start at the end 
-//index.  Find the prev city (to be used as an index) at that end
-//index.  The prev city becomes your next index.  Find the prev 
-//city for that index.  Continue to find the prev cities until 
-//the city (aka index) is the start city.
-//THEN print out the path in reverse order!  (To do this, I stuck
-//each city in an array as I worked my way from end to start, and 
-//then printed out the cities in reverse order.
-
-		string array[numOfCities];
-	for (int i = numOfCities-1; i >= 0; i--) {
-		if (Cities[start] == Cities[prev[i]]) {
-			break;
-		}
-		array[i] = Cities[prev[i]];
+	//This function gives you the final shortest path from the start
+	//index (aka city) to the end index (aka city).  It is very
+	//simple code!!  You must understand how it works, though, in
+	//order to be able to write it.
+	//
+	//To write this, you'll use the prev array.  Start at the end
+	//index.  Find the prev city (to be used as an index) at that end
+	//index.  The prev city becomes your next index.  Find the prev
+	//city for that index.  Continue to find the prev cities until
+	//the city (aka index) is the start city.
+	//THEN print out the path in reverse order!  (To do this, I stuck
+	//each city in an array as I worked my way from end to start, and
+	//then printed out the cities in reverse order.
+	printInfoSoFar();
+	int current = end;
+	int reversesize = 1;
+	while (current != start) {
+		reversesize +=1;
+		current = prev[current];
+	}
+	int* cityorder = new int[reversesize];
+	current = end;
+	for (int i=reversesize-1;i>=0;i--) {
+		cityorder[i] = current;
+		current = prev[current];
 	}
 
-	for (int i = 0; i < numOfCities; i++) {
-	cout << array[i] << " ";
+	cout << "Path: " << endl;
+	 for (int i = 0;i<reversesize;i++) {
+	 	cout << Cities[cityorder[i]] << endl;
 	}
-}
-
 }
 /************************************************************/
 /* That's the end of what you have to write                 */
@@ -157,7 +167,7 @@ void Dijkstra::printInfoSoFar() {
 
 
 /*************************************************************/
-/* This is the user interface that allows you to choose your 
+/* This is the user interface that allows you to choose your
 /* start and end city you're traveling through.  You should not
 /* need to touch this.
 /*************************************************************/
@@ -174,30 +184,30 @@ void Dijkstra::Interface() {
 }
 
 /*************************************************************/
-/* This method reads in the different Map files and initializes 
+/* This method reads in the different Map files and initializes
 /* all your arrays along with the adjacency matrix.  It
 /* initializes the following:
 /*
 /* numOfCities: the number of cities in the adjacency matrix
 /*
-/* Cities: an array filled with the list of cities - the index in 
-/* the array is the number corresponding with each city (which 
+/* Cities: an array filled with the list of cities - the index in
+/* the array is the number corresponding with each city (which
 /* can be utilized when printing out the path
-/* 
+/*
 /* visited: set to false for all cities (indices) to start
 /*
 /* prev: set to -1 (aka no previous city) for each index to start
 /*
-/* distance: set to a really large number for all indices to 
+/* distance: set to a really large number for all indices to
 /* start
 /*
-/* matrixGraph: this is your adjacency matrix that holds the 
-/* distance from each city to each city.  It is initialized in 
+/* matrixGraph: this is your adjacency matrix that holds the
+/* distance from each city to each city.  It is initialized in
 /* here with values read in from the different Map***.txt files
 /*
-/* If you want to make sure you're reading in your files 
+/* If you want to make sure you're reading in your files
 /* correctly (aka make sure the files are in the correct place),
-/* there are a number of print statements in here you can 
+/* there are a number of print statements in here you can
 /* uncomment out.  Otherwise You should not need to touch this.
 /*************************************************************/
 void Dijkstra::readFile(string fn) {
@@ -248,7 +258,6 @@ void Dijkstra::readFile(string fn) {
     printMatrix();
 	return;
 }
-
 
 
 
