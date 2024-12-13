@@ -1,3 +1,5 @@
+// Done by TJ Tomaszewski and Alexander Chambers
+
 #include "Dijkstra.hpp"
 #include <iostream>
 #include <stdlib.h>
@@ -15,18 +17,22 @@ Dijkstra::Dijkstra(string fname) {
 
 // WRITE THIS (10 pts)
 void Dijkstra::runDijkstra(){
-	//Initialize distances
-	for (int i=0;i<numOfCities;i++) {
+	// Initialize distances from start vertex
+	for (int i = 0; i < numOfCities; i++) {
+		distances[start] = 0;  // Set start vertex distance to 0
+		visited[start] = true; // Mark start vertex as visited
 		distances[i] = matrixGraph[start][i];
 		if (matrixGraph[start][i] > 0) {
 			prev[i] = start;
 		}
 	}
-	int nextindex = start;
-	for (int i = 0;i<numOfCities;i++) {
-		setDistances(nextindex);
-		nextindex = minDistance();
+
+	for (int count = 0; count < numOfCities - 1; count++) {
+		int nextIndex = minDistance();
+		if (nextIndex == -1) break;  // No more unvisited vertices
+		setDistances(nextIndex);
 	}
+}
 
 //For this method, you should set the distance to the starting
 //vertex to 0 (the starting vertex is the index in the start
@@ -42,7 +48,7 @@ void Dijkstra::runDijkstra(){
 //
 //Note that I also called printInfoSoFar in the loop so I could
 //see all the updates as we went along.
-}
+
 
 //WRITE THIS (12 pts)
 void Dijkstra::setDistances(int latestVert) {
@@ -73,13 +79,15 @@ int Dijkstra::minDistance(){
 //array), the visited array at that index is set to True and that
 //index is returned from this method.
 	int min = INT_MAX;
-	int minIndex = 0;
+	int minIndex = -1;
 	for (int i = 0; i < numOfCities; i++) {
-		if (visited[i] == false && distances[i] <= min) {
+		if (!visited[i] && distances[i] < min) {
 			min = distances[i];
-			visited[i] = true;
 			minIndex = i;
 		}
+	}
+	if (minIndex != -1) {
+		visited[minIndex] = true;
 	}
 	return minIndex;
 }
@@ -258,7 +266,6 @@ void Dijkstra::readFile(string fn) {
     printMatrix();
 	return;
 }
-
 
 
 
